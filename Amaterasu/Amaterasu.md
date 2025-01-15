@@ -179,7 +179,7 @@
 
 > After running a feroxbuster scan on port 33414 I can see the following directories. 
 
-![feroxbuster](/Proving_Grounds/Amaterasu/images/feroxbuster-33414.png) 
+![feroxbuster](/Amaterasu/images/feroxbuster-33414.png) 
 
 
 1. /help
@@ -194,31 +194,31 @@
 > "GET /file-list?dir=/tmp : List of the files"
 > Through some enumeration we can see there is an internal user named alfredo, but I wasn't able to read his SSH key.
 
-![Website](/Proving_Grounds/Amaterasu/images/help.png) 
+![Website](/Amaterasu/images/help.png) 
 
-![Website](/Proving_Grounds/Amaterasu/images/dir.png) 
+![Website](/Amaterasu/images/dir.png) 
 
 > I can't grab Alfredo's SSH key but maybe I can upload my SSH key into Alfredo's .ssh directory. I'll use the ssh-keygen command to generate ssh keys and name them id_alfredo. 
 
 
 > I generated the SSH keys and just used a NULL password. Let's try and use curl to POST the files to the /file-upload endpoint.
 
-![Website](/Proving_Grounds/Amaterasu/images/keygen.png) 
+![Website](/Amaterasu/images/keygen.png) 
 
 > There is now an authorized_keys file in Alfredo's .ssh directory we should be able to SSH into the target now using the private key. 
 
 
-![Website](/Proving_Grounds/Amaterasu/images/upload.png) 
+![Website](/Amaterasu/images/upload.png) 
 
 > We are able to SSH in as Alfredo and can grab the local.txt flag. 
 
-![Website](/Proving_Grounds/Amaterasu/images/ssh.png) 
+![Website](/Amaterasu/images/ssh.png) 
 
 
 ### Priv Esc
 
 
-![Website](/Proving_Grounds/Amaterasu/images/cron.png) 
+![Website](/Amaterasu/images/cron.png) 
 
 
 > running the cat /etc/cron* command we can see a bash script /usr/local/bin/backup-flask.sh that's running as a cronjob as root on the host machine. 
@@ -235,18 +235,18 @@
 > First we need to create 2 files in the restapi directory called '--checkpoint=1' and '--checkpoint-action=exec=sh privesc.sh. I just did this with the touch command you chould also do it with the echo command. 
 
 
-![Website](/Proving_Grounds/Amaterasu/images/touch.png) 
+![Website](/Amaterasu/images/touch.png) 
 
 > Next we need to add our current use alfredo to the /etc/sudoers file to be able to run any command as sudo with the following. echo 'alfredo ALL=(root) NOPASSWD: ALL' > /etc/sudoers. But this needs to be in our privesc.sh script so first we'll have to echo '#!/bin/bash to tell the interpreter it's a bash script. 
 
 > I used vi to run the echo command to put our user alfredo into the sudoers file to be able to execute all commands with sudo. Once the cronjob runs we should be able to just run sudo su and it should give us root privileges on the target machine. If we run the sudo -l command we will be able to tell if it's worked or not.
 
-![Website](/Proving_Grounds/Amaterasu/images/root.png) 
+![Website](/Amaterasu/images/root.png) 
 
 > Our exploit script worked and we are now root and can grab the proof.txt file from /root directory.
 
-![Website](/Proving_Grounds/Amaterasu/images/pwned.png) 
+![Website](/Amaterasu/images/pwned.png) 
 
 > Remember to cleanup after ourselves when we are finished. 
 
-![Website](/Proving_Grounds/Amaterasu/images/cleanup.png) 
+![Website](/Amaterasu/images/cleanup.png) 
